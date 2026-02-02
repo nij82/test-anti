@@ -5,13 +5,18 @@
     --text-color: #f8fafc;
     --ball-size: 60px;
     --ball-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.15);
-    
+
     /* Lotto Colors */
-    --color-1-10: #facc15;   /* Yellow */
-    --color-11-20: #3b82f6;  /* Blue */
-    --color-21-30: #ef4444;  /* Red */
-    --color-31-40: #94a3b8;  /* Gray */
-    --color-41-45: #22c55e;  /* Green */
+    --color-1-10: #facc15;
+    /* Yellow */
+    --color-11-20: #3b82f6;
+    /* Blue */
+    --color-21-30: #ef4444;
+    /* Red */
+    --color-31-40: #94a3b8;
+    /* Gray */
+    --color-41-45: #22c55e;
+    /* Green */
 }
 
 * {
@@ -23,7 +28,7 @@
 body {
     font-family: 'Inter', sans-serif;
     background-color: var(--bg-color);
-    background-image: 
+    background-image:
         radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.15) 0px, transparent 50%),
         radial-gradient(at 100% 0%, rgba(168, 85, 247, 0.15) 0px, transparent 50%),
         radial-gradient(at 100% 100%, rgba(59, 130, 246, 0.15) 0px, transparent 50%);
@@ -74,18 +79,34 @@ header p {
     padding: 2rem;
     min-height: 140px;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
-    margin-bottom: 3rem;
+    margin-bottom: 2rem;
     border: 1px solid rgba(255, 255, 255, 0.05);
     box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.2);
+    gap: 1rem;
+}
+
+.lotto-row {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 50px;
+    width: 100%;
+    max-width: 500px;
+    animation: fadeIn 0.5s ease-out;
 }
 
 .balls-container {
     display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 12px;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    width: 100%;
 }
 
 .placeholder-text {
@@ -106,36 +127,70 @@ header p {
     font-weight: 800;
     font-size: 1.5rem;
     color: white;
-    box-shadow: 
-        inset -5px -5px 10px rgba(0,0,0,0.3),
-        inset 5px 5px 10px rgba(255,255,255,0.2),
+    box-shadow:
+        inset -5px -5px 10px rgba(0, 0, 0, 0.3),
+        inset 5px 5px 10px rgba(255, 255, 255, 0.2),
         var(--ball-shadow);
     transform: scale(0);
     animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
     position: relative;
-    border: 2px solid rgba(255,255,255,0.1);
+    border: 2px solid rgba(255, 255, 255, 0.1);
 }
 
 /* Ball Colors */
-.ball-y { background: var(--color-1-10); text-shadow: 0 1px 2px rgba(0,0,0,0.3); color: #000; } /* Yellow - Dark text for contrast */
-.ball-b { background: var(--color-11-20); }
-.ball-r { background: var(--color-21-30); }
-.ball-g { background: var(--color-31-40); }
-.ball-gr { background: var(--color-41-45); }
+.ball-y {
+    background: var(--color-1-10);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    color: #000;
+}
+
+/* Yellow - Dark text for contrast */
+.ball-b {
+    background: var(--color-11-20);
+}
+
+.ball-r {
+    background: var(--color-21-30);
+}
+
+.ball-g {
+    background: var(--color-31-40);
+}
+
+.ball-gr {
+    background: var(--color-41-45);
+}
+
+.button-group {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
 
 .generate-btn {
     position: relative;
     background: var(--primary-gradient);
     border: none;
     border-radius: 12px;
-    padding: 1rem 3rem;
-    font-size: 1.2rem;
+    padding: 1rem 2rem;
+    font-size: 1.1rem;
     font-weight: 700;
     color: white;
     cursor: pointer;
     transition: all 0.3s ease;
     overflow: hidden;
     box-shadow: 0 4px 6px -1px rgba(99, 102, 241, 0.3);
+    min-width: 140px;
+}
+
+.generate-btn.secondary {
+    background: linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%);
+    box-shadow: 0 4px 6px -1px rgba(236, 72, 153, 0.3);
+}
+
+.generate-btn.secondary:hover {
+    box-shadow: 0 10px 15px -3px rgba(236, 72, 153, 0.4);
 }
 
 .generate-btn:hover {
@@ -153,7 +208,7 @@ header p {
     left: -50%;
     width: 200%;
     height: 200%;
-    background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.3) 0%, transparent 70%);
     opacity: 0;
     transform: scale(0.5);
     transition: opacity 0.3s, transform 0.5s;
@@ -167,28 +222,61 @@ header p {
 
 /* Animations */
 @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 @keyframes popIn {
-    to { transform: scale(1); }
+    to {
+        transform: scale(1);
+    }
 }
 
 @keyframes pulse {
-    0% { opacity: 0.5; }
-    50% { opacity: 1; }
-    100% { opacity: 0.5; }
+    0% {
+        opacity: 0.5;
+    }
+
+    50% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0.5;
+    }
 }
 
 @keyframes rotate {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
 }
 
 /* Responsive */
 @media (max-width: 480px) {
-    header h1 { font-size: 2.2rem; }
-    .container { padding: 2rem 1rem; width: 95%; }
-    .lotto-ball { width: 45px; height: 45px; font-size: 1.2rem; }
+    header h1 {
+        font-size: 2.2rem;
+    }
+
+    .container {
+        padding: 2rem 1rem;
+        width: 95%;
+    }
+
+    .lotto-ball {
+        width: 45px;
+        height: 45px;
+        font-size: 1.2rem;
+    }
 }

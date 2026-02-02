@@ -1,42 +1,88 @@
 document.addEventListener('DOMContentLoaded', () => {
     const generateBtn = document.getElementById('generate-btn');
+    const generateFiveBtn = document.getElementById('generate-five-btn');
     const resultContainer = document.getElementById('result-container');
     let isGenerating = false;
 
+    // Generate 1 Set
     generateBtn.addEventListener('click', () => {
         if (isGenerating) return;
-        generateLottoNumbers();
+        handleGeneration(1);
     });
 
-    function generateLottoNumbers() {
+    // Generate 5 Sets
+    generateFiveBtn.addEventListener('click', () => {
+        if (isGenerating) return;
+        handleGeneration(5);
+    });
+
+    async function handleGeneration(count) {
         isGenerating = true;
-        generateBtn.disabled = true;
-        generateBtn.style.opacity = '0.7';
-        
+        setButtonsState(true);
+
         // Clear previous results
         resultContainer.innerHTML = '';
+        const isSingle = count === 1;
 
-        // Generate 6 unique numbers
+        if (isSingle) {
+            // Original styling for single row (no background container)
+            await createAndAnimateRow(0, false);
+        } else {
+            // Generate multiple rows
+            for (let i = 0; i < count; i++) {
+                await createAndAnimateRow(i * 100, true);
+            }
+        }
+
+        isGenerating = false;
+        setButtonsState(false);
+    }
+
+    function setButtonsState(disabled) {
+        generateBtn.disabled = disabled;
+        generateFiveBtn.disabled = disabled;
+        const opacity = disabled ? '0.7' : '1';
+        generateBtn.style.opacity = opacity;
+        generateFiveBtn.style.opacity = opacity;
+    }
+
+    function createAndAnimateRow(delay, isRowStyled) {
+        return new Promise(resolve => {
+            setTimeout(() => {
+                const numbers = getUniqueNumbers();
+                const row = document.createElement('div');
+
+                if (isRowStyled) {
+                    row.classList.add('lotto-row');
+                } else {
+                    // Start with flex and gap for single row too
+                    row.style.display = 'flex';
+                    row.style.gap = '12px';
+                    row.style.justifyContent = 'center';
+                }
+
+                resultContainer.appendChild(row);
+
+                // Animate balls one by one
+                numbers.forEach((num, index) => {
+                    setTimeout(() => {
+                        const ball = createBall(num);
+                        row.appendChild(ball);
+                    }, index * 50); // Faster animation for bulk
+                });
+
+                // Resolve after this row is done (approximate to keep flow)
+                resolve();
+            }, delay);
+        });
+    }
+
+    function getUniqueNumbers() {
         const numbers = new Set();
         while (numbers.size < 6) {
             numbers.add(Math.floor(Math.random() * 45) + 1);
         }
-
-        // Convert to array and sort ascending
-        const sortedNumbers = Array.from(numbers).sort((a, b) => a - b);
-
-        // Display balls with delay
-        sortedNumbers.forEach((num, index) => {
-            setTimeout(() => {
-                createBall(num);
-                // Re-enable button after last ball
-                if (index === sortedNumbers.length - 1) {
-                    isGenerating = false;
-                    generateBtn.disabled = false;
-                    generateBtn.style.opacity = '1';
-                }
-            }, index * 300); // 300ms delay between each ball
-        });
+        return Array.from(numbers).sort((a, b) => a - b);
     }
 
     function createBall(number) {
@@ -44,7 +90,7 @@ document.addEventListener('DOMContentLoaded', () => {
         ball.classList.add('lotto-ball');
         ball.classList.add(getBallColorClass(number));
         ball.textContent = number;
-        resultContainer.appendChild(ball);
+        return ball;
     }
 
     function getBallColorClass(number) {
